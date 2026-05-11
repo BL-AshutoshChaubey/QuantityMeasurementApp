@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Quantity {
     private final double value;
-    private final MeasurementUnit unit;
+    private final Unit unit;
 
-    public Quantity(double value, MeasurementUnit unit) {
+    public Quantity(double value, Unit unit) {
         this.value = value;
         this.unit = unit;
     }
