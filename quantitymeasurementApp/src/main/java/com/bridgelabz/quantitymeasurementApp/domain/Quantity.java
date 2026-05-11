@@ -21,19 +21,23 @@ public class Quantity {
     private double getBaseValue() {
         return this.value * this.unit.getBaseConversionFactor();
     }
-    public Quantity add(Quantity other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Cannot add a null quantity");
+    public Quantity add(Quantity other, Unit targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
         }
 
-        // Normalize both to the base value (e.g., Inches) and add them
+        // Normalize both to the base value and add them
         double sumInBaseUnits = this.getBaseValue() + other.getBaseValue();
 
-        // Convert the total base value back into the unit of the calling object
-        double finalValue = sumInBaseUnits / this.unit.getBaseConversionFactor();
+        // Convert the total base value into the requested target unit
+        double finalValue = sumInBaseUnits / targetUnit.getBaseConversionFactor();
 
-        // Return a brand new object to maintain immutability
-        return new Quantity(finalValue, this.unit);
+        // Return a brand new object to maintain immutability and thread-safety
+        return new Quantity(finalValue, targetUnit);
+    }
+    public Quantity add(Quantity other) {
+
+        return this.add(other, this.unit);
     }
 
     // Overriding equals to satisfy UC1: Object Equality, Null, and Type Checking

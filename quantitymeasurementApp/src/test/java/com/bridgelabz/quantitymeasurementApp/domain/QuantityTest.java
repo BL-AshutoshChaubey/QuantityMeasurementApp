@@ -193,4 +193,39 @@ public class QuantityTest {
             inch.add(null);
         });
     }
+    // --- UC7 Tests (Addition with Target Unit Specification) ---
+
+    @Test
+    void given1FootAnd2Inches_WhenAddedWithTargetInches_ShouldReturn14Inches() {
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity inch = new Quantity(2.0, LengthUnit.INCHES);
+        Quantity expected = new Quantity(14.0, LengthUnit.INCHES);
+
+        // Explicitly requesting the answer in INCHES
+        Quantity sum = foot.add(inch, LengthUnit.INCHES);
+
+        assertEquals(expected, sum);
+    }
+
+    @Test
+    void given1FootAnd2Feet_WhenAddedWithTargetYards_ShouldReturn1Yard() {
+        Quantity foot1 = new Quantity(1.0, LengthUnit.FEET);
+        Quantity foot2 = new Quantity(2.0, LengthUnit.FEET);
+        Quantity expected = new Quantity(1.0, LengthUnit.YARD);
+
+        // Explicitly requesting the answer in YARDS
+        Quantity sum = foot1.add(foot2, LengthUnit.YARD);
+
+        assertEquals(expected, sum);
+    }
+
+    @Test
+    void given2InchesAnd2Inches_WhenAddedWithNullTargetUnit_ShouldThrowException() {
+        Quantity inch1 = new Quantity(2.0, LengthUnit.INCHES);
+        Quantity inch2 = new Quantity(2.0, LengthUnit.INCHES);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            inch1.add(inch2, null);
+        });
+    }
 }
