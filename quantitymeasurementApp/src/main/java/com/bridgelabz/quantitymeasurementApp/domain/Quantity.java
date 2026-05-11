@@ -13,13 +13,13 @@ public class Quantity {
 
     // Overriding equals to satisfy UC1: Object Equality, Null, and Type Checking
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object object) {
         // 1. Reference Check
-        if (this == o) return true;
+        if (this == object) return true;
         // 2. Null and Type Check
-        if (o == null || getClass() != o.getClass()) return false;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        Quantity quantity = (Quantity) o;
+        Quantity quantity = (Quantity) object;
 
         // 3. Floating-point comparison using Double.compare
         double thisBaseValue = this.value * this.unit.getBaseConversionFactor();
