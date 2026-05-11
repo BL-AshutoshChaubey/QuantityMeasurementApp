@@ -10,6 +10,17 @@ public class Quantity {
         this.value = value;
         this.unit = unit;
     }
+    public Quantity convertTo(Unit targetUnit) {
+        // Calculate the new value: (Current Base Value) / (Target Unit Base Factor)
+        double convertedValue = this.getBaseValue() / targetUnit.getBaseConversionFactor();
+
+        // Return a NEW object to maintain Immutability
+        return new Quantity(convertedValue, targetUnit);
+    }
+
+    private double getBaseValue() {
+        return this.value * this.unit.getBaseConversionFactor();
+    }
 
     // Overriding equals to satisfy UC1: Object Equality, Null, and Type Checking
     @Override
@@ -22,14 +33,15 @@ public class Quantity {
         Quantity quantity = (Quantity) object;
 
         // 3. Floating-point comparison using Double.compare
-        double thisBaseValue = this.value * this.unit.getBaseConversionFactor();
-        double otherBaseValue = quantity.value * quantity.unit.getBaseConversionFactor();
-
-        return Double.compare(thisBaseValue, otherBaseValue) == 0;
+        return Double.compare(this.getBaseValue(),quantity.getBaseValue()) == 0;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(value, unit);
+    }
+    @Override
+    public String toString() {
+        return value + " " + unit;
     }
 }

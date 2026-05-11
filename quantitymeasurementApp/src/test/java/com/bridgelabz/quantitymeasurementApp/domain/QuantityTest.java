@@ -105,4 +105,46 @@ public class QuantityTest {
         Quantity mile = new Quantity(1.0, LengthUnit.MILE);
         assertNotEquals(yard, mile);
     }
+    // --- UC5 Tests (Unit-to-Unit Conversion) ---
+
+    @Test
+    void given1Foot_WhenConvertedToInches_ShouldReturn12Inches() {
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity expectedInches = new Quantity(12.0, LengthUnit.INCHES);
+
+        Quantity converted = foot.convertTo(LengthUnit.INCHES);
+
+        assertEquals(expectedInches, converted);
+    }
+
+    @Test
+    void given2Yards_WhenConvertedToFeet_ShouldReturn6Feet() {
+        Quantity yard = new Quantity(2.0, LengthUnit.YARD);
+        Quantity expectedFeet = new Quantity(6.0, LengthUnit.FEET);
+
+        Quantity converted = yard.convertTo(LengthUnit.FEET);
+
+        assertEquals(expectedFeet, converted);
+    }
+
+    @Test
+    void given1Mile_WhenConvertedToYards_ShouldReturn1760Yards() {
+        Quantity mile = new Quantity(1.0, LengthUnit.MILE);
+        Quantity expectedYards = new Quantity(1760.0, LengthUnit.YARD);
+
+        Quantity converted = mile.convertTo(LengthUnit.YARD);
+
+        assertEquals(expectedYards, converted);
+    }
+
+    @Test
+    void givenQuantity_WhenConverted_ShouldReturnBrandNewObject() {
+        Quantity original = new Quantity(1.0, LengthUnit.FEET);
+        Quantity converted = original.convertTo(LengthUnit.INCHES);
+
+        // Assert they have equal values...
+        assertEquals(original, converted);
+        // ...but assert they are NOT the exact same object in memory (Immutability check)
+        assertNotSame(original, converted);
+    }
 }
