@@ -147,4 +147,50 @@ public class QuantityTest {
         // ...but assert they are NOT the exact same object in memory (Immutability check)
         assertNotSame(original, converted);
     }
+    // --- UC6 Tests (Addition of Length Units) ---
+
+    @Test
+    void given2InchesAnd2Inches_WhenAdded_ShouldReturn4Inches() {
+        Quantity inch1 = new Quantity(2.0, LengthUnit.INCHES);
+        Quantity inch2 = new Quantity(2.0, LengthUnit.INCHES);
+        Quantity expected = new Quantity(4.0, LengthUnit.INCHES);
+
+        Quantity sum = inch1.add(inch2);
+
+        assertEquals(expected, sum);
+    }
+
+    @Test
+    void given1FootAnd2Inches_WhenAdded_ShouldReturn14Inches() {
+        // We expect the result in inches, so we call .add() on the inches object
+        Quantity inch = new Quantity(2.0, LengthUnit.INCHES);
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity expected = new Quantity(14.0, LengthUnit.INCHES);
+
+        Quantity sum = inch.add(foot);
+
+        assertEquals(expected, sum);
+    }
+
+    @Test
+    void given1FootAnd1Foot_WhenAdded_ShouldReturn24Inches() {
+        Quantity foot1 = new Quantity(1.0, LengthUnit.FEET);
+        Quantity foot2 = new Quantity(1.0, LengthUnit.FEET);
+
+        // Even if we add feet, we can assert it equals 24 inches because of our strong equals() method!
+        Quantity expectedInches = new Quantity(24.0, LengthUnit.INCHES);
+
+        Quantity sum = foot1.add(foot2);
+
+        assertEquals(expectedInches, sum);
+    }
+
+    @Test
+    void given2InchesAnd2Point5Centimeters_WhenAdded_ShouldThrowExceptionForNull() {
+        Quantity inch = new Quantity(2.0, LengthUnit.INCHES);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            inch.add(null);
+        });
+    }
 }
