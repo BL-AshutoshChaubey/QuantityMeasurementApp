@@ -98,6 +98,9 @@ public class Quantity <T extends Unit> {
 
         return Double.compare(thisBase, otherBase) == 0;
     }
+    public double getValue(){
+        return this.value;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(value, unit);
