@@ -19,29 +19,62 @@ public class Quantity <T extends Unit> {
         double convertedValue = UnitConverter.convertFromBaseValue(baseValue, targetUnit);
         return new Quantity<>(convertedValue, targetUnit);
     }
+    private Quantity<T> calculate(double operandBaseValue, T targetUnit, Operation operation) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target Unit cannot be null");
+        }
 
+        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+
+        // Execute the Lambda expression passed via the Enum
+        double resultBaseValue = operation.apply(thisBaseValue, operandBaseValue);
+
+        double finalValue = UnitConverter.convertFromBaseValue(resultBaseValue, targetUnit);
+
+        return new Quantity<>(finalValue, targetUnit);
+    }
 
     public Quantity<T> add(Quantity<T> other, T targetUnit) {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
         }
+        double otherBase = UnitConverter.convertToBaseValue(other.value, other.unit);
+        return this.calculate(otherBase, targetUnit, Operation.ADD);
 
-        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
-        double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
-
-        double sumInBaseUnits = thisBaseValue + otherBaseValue;
-
-        // Delegating target conversion
-        double finalValue = UnitConverter.convertFromBaseValue(sumInBaseUnits, targetUnit);
-
-
-        return new Quantity<>(finalValue, targetUnit);
     }
     public Quantity<T> add(Quantity<T> other) {
 
         return this.add(other, this.unit);
     }
 
+
+
+    // --- Subtraction Operations ---
+
+    public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
+        }
+        double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
+        return this.calculate(otherBaseValue,targetUnit,Operation.SUBTRACT);
+    }
+
+    public Quantity<T> subtract(Quantity<T> other) {
+        return this.subtract(other, this.unit);
+    }
+
+    // --- Division Operations ---
+
+    public Quantity<T> divide(double divisor, T targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target Unit cannot be null");
+        }
+        return this.calculate(divisor,targetUnit,Operation.DIVIDE);
+    }
+
+    public Quantity<T> divide(double divisor) {
+        return this.divide(divisor, this.unit);
+    }
     // Overriding equals to satisfy UC1: Object Equality, Null, and Type Checking
     @Override
     public boolean equals(Object object) {
@@ -63,50 +96,6 @@ public class Quantity <T extends Unit> {
         double otherBase = UnitConverter.convertToBaseValue(quantity.value, quantity.unit);
 
         return Double.compare(thisBase, otherBase) == 0;
-    }
-    // --- Subtraction Operations ---
-
-    public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
-        if (other == null || targetUnit == null) {
-            throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
-        }
-
-        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
-        double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
-
-        // Non-Commutative: Order strictly matters here
-        double differenceInBaseUnits = thisBaseValue - otherBaseValue;
-        double finalValue = UnitConverter.convertFromBaseValue(differenceInBaseUnits, targetUnit);
-
-        return new Quantity<>(finalValue, targetUnit);
-    }
-
-    public Quantity<T> subtract(Quantity<T> other) {
-        return this.subtract(other, this.unit);
-    }
-
-    // --- Division Operations ---
-
-    public Quantity<T> divide(double divisor, T targetUnit) {
-        if (targetUnit == null) {
-            throw new IllegalArgumentException("Target Unit cannot be null");
-        }
-        // Division by Zero Handling
-        if (divisor == 0.0) {
-            throw new ArithmeticException("Cannot divide a quantity by zero");
-        }
-
-        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
-
-        // Non-Commutative division by a scalar
-        double dividedBaseUnits = thisBaseValue / divisor;
-        double finalValue = UnitConverter.convertFromBaseValue(dividedBaseUnits, targetUnit);
-
-        return new Quantity<>(finalValue, targetUnit);
-    }
-
-    public Quantity<T> divide(double divisor) {
-        return this.divide(divisor, this.unit);
     }
     @Override
     public int hashCode() {
