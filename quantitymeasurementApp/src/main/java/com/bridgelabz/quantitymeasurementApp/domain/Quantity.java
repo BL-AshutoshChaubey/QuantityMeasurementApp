@@ -11,6 +11,12 @@ public class Quantity {
         this.unit = unit;
     }
     public Quantity convertTo(Unit targetUnit) {
+        // ENFORCE TYPE SAFETY: Cannot convert Length to Weight
+        if (!this.unit.getClass().equals(targetUnit.getClass())) {
+            throw new IllegalArgumentException("Cannot convert across different measurement categories");
+        }
+
+
         double baseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         double convertedValue = UnitConverter.convertFromBaseValue(baseValue, targetUnit);
         return new Quantity(convertedValue, targetUnit);
@@ -20,6 +26,10 @@ public class Quantity {
     public Quantity add(Quantity other, Unit targetUnit) {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
+        }
+        // ENFORCE TYPE SAFETY: Cannot add Length to Weight
+        if (!this.unit.getClass().equals(other.unit.getClass()) || !this.unit.getClass().equals(targetUnit.getClass())) {
+            throw new IllegalArgumentException("Cannot perform arithmetic across different measurement categories");
         }
         double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
@@ -46,7 +56,10 @@ public class Quantity {
         if (object == null || getClass() != object.getClass()) return false;
 
         Quantity quantity = (Quantity) object;
-
+        // ENFORCE TYPE SAFETY: If they are different categories, they cannot be equal!
+        if (!this.unit.getClass().equals(quantity.unit.getClass())) {
+            return false;
+        }
         // 3. Floating-point comparison using Double.compare
         double thisBase = UnitConverter.convertToBaseValue(this.value, this.unit);
         double otherBase = UnitConverter.convertToBaseValue(quantity.value, quantity.unit);
