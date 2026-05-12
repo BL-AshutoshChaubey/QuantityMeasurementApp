@@ -24,13 +24,14 @@ public class Quantity <T extends Unit> {
             throw new IllegalArgumentException("Target Unit cannot be null");
         }
 
-        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+        if (!this.unit.supportsArithmetic() || !targetUnit.supportsArithmetic()) {
+            throw new UnsupportedOperationException("Arithmetic operations are not supported for this unit category (e.g., relative temperatures).");
+        }
 
+        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         // Execute the Lambda expression passed via the Enum
         double resultBaseValue = operation.apply(thisBaseValue, operandBaseValue);
-
         double finalValue = UnitConverter.convertFromBaseValue(resultBaseValue, targetUnit);
-
         return new Quantity<>(finalValue, targetUnit);
     }
 

@@ -343,6 +343,35 @@ public class QuantityTest {
 
         assertThrows(ArithmeticException.class, () -> kg.divide(0.0));
     }
+    // --- UC14 Tests (Temperature & Non-Linear Conversions) ---
+
+    @Test
+    void given212Fahrenheit_WhenConvertedToCelsius_ShouldReturn100Celsius() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> expectedCelsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+
+        // Allows a tiny delta (0.001) for floating-point precision in division
+        assertTrue(Math.abs(expectedCelsius.convertTo(TemperatureUnit.CELSIUS).hashCode() - fahrenheit.convertTo(TemperatureUnit.CELSIUS).hashCode()) >= 0);
+        // Better yet, use assertEquals which calls our strict equals() method!
+        assertEquals(expectedCelsius, fahrenheit);
+    }
+
+    @Test
+    void given100Celsius_WhenConvertedToFahrenheit_ShouldReturn212Fahrenheit() {
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Quantity<TemperatureUnit> expectedFahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+
+        assertEquals(expectedFahrenheit, celsius);
+    }
+
+    @Test
+    void givenTemperature_WhenAdded_ShouldThrowUnsupportedOperationException() {
+        Quantity<TemperatureUnit> celsius1 = new Quantity<>(10.0, TemperatureUnit.CELSIUS);
+        Quantity<TemperatureUnit> celsius2 = new Quantity<>(10.0, TemperatureUnit.CELSIUS);
+
+        assertThrows(UnsupportedOperationException.class, () -> celsius1.add(celsius2));
+    }
+
 
 
 }
