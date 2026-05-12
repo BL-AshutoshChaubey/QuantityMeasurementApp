@@ -11,28 +11,25 @@ public class Quantity {
         this.unit = unit;
     }
     public Quantity convertTo(Unit targetUnit) {
-        // Calculate the new value: (Current Base Value) / (Target Unit Base Factor)
-        double convertedValue = this.getBaseValue() / targetUnit.getBaseConversionFactor();
-
-        // Return a NEW object to maintain Immutability
+        double baseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+        double convertedValue = UnitConverter.convertFromBaseValue(baseValue, targetUnit);
         return new Quantity(convertedValue, targetUnit);
     }
 
-    private double getBaseValue() {
-        return this.value * this.unit.getBaseConversionFactor();
-    }
+
     public Quantity add(Quantity other, Unit targetUnit) {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
         }
+        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+        double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
 
-        // Normalize both to the base value and add them
-        double sumInBaseUnits = this.getBaseValue() + other.getBaseValue();
+        double sumInBaseUnits = thisBaseValue + otherBaseValue;
 
-        // Convert the total base value into the requested target unit
-        double finalValue = sumInBaseUnits / targetUnit.getBaseConversionFactor();
+        // Delegating target conversion
+        double finalValue = UnitConverter.convertFromBaseValue(sumInBaseUnits, targetUnit);
 
-        // Return a brand new object to maintain immutability and thread-safety
+
         return new Quantity(finalValue, targetUnit);
     }
     public Quantity add(Quantity other) {
@@ -51,7 +48,10 @@ public class Quantity {
         Quantity quantity = (Quantity) object;
 
         // 3. Floating-point comparison using Double.compare
-        return Double.compare(this.getBaseValue(),quantity.getBaseValue()) == 0;
+        double thisBase = UnitConverter.convertToBaseValue(this.value, this.unit);
+        double otherBase = UnitConverter.convertToBaseValue(quantity.value, quantity.unit);
+
+        return Double.compare(thisBase, otherBase) == 0;
     }
 
     @Override
