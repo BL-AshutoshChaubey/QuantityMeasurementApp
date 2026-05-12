@@ -2,20 +2,18 @@ package com.bridgelabz.quantitymeasurementApp.domain;
 
 import java.util.Objects;
 
-public class Quantity {
+public class Quantity <T extends Unit> {
     private final double value;
-    private final Unit unit;
+    private final T unit;
 
-    public Quantity(double value, Unit unit) {
+    public Quantity(double value, T unit) {
         this.value = value;
         this.unit = unit;
     }
-    public Quantity convertTo(Unit targetUnit) {
-        // ENFORCE TYPE SAFETY: Cannot convert Length to Weight
-        if (!this.unit.getClass().equals(targetUnit.getClass())) {
-            throw new IllegalArgumentException("Cannot convert across different measurement categories");
+    public Quantity<T> convertTo(T targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target Unit cannot be null");
         }
-
 
         double baseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         double convertedValue = UnitConverter.convertFromBaseValue(baseValue, targetUnit);
@@ -23,14 +21,11 @@ public class Quantity {
     }
 
 
-    public Quantity add(Quantity other, Unit targetUnit) {
+    public Quantity<T> add(Quantity<T> other, T targetUnit) {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
         }
-        // ENFORCE TYPE SAFETY: Cannot add Length to Weight
-        if (!this.unit.getClass().equals(other.unit.getClass()) || !this.unit.getClass().equals(targetUnit.getClass())) {
-            throw new IllegalArgumentException("Cannot perform arithmetic across different measurement categories");
-        }
+
         double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
 
@@ -42,7 +37,7 @@ public class Quantity {
 
         return new Quantity(finalValue, targetUnit);
     }
-    public Quantity add(Quantity other) {
+    public Quantity<T> add(Quantity<T> other) {
 
         return this.add(other, this.unit);
     }
@@ -55,8 +50,11 @@ public class Quantity {
         // 2. Null and Type Check
         if (object == null || getClass() != object.getClass()) return false;
 
-        Quantity quantity = (Quantity) object;
-        // ENFORCE TYPE SAFETY: If they are different categories, they cannot be equal!
+        // 4. Type Erasure and Wildcards (<?>): At runtime, generic types are erased.
+        // We use a wildcard to safely cast the object.
+        Quantity<?> quantity = (Quantity<?>) object;
+
+        // ENFORCE TYPE SAFETY: If they are different categories, they cannot be equal!// checking at runtime
         if (!this.unit.getClass().equals(quantity.unit.getClass())) {
             return false;
         }
