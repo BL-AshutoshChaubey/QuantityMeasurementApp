@@ -228,4 +228,61 @@ public class QuantityTest {
             inch1.add(inch2, null);
         });
     }
+    // --- UC9 Tests (Weight Support & Type Safety) ---
+
+    @Test
+    void given1GramAnd1Gram_ShouldReturnEqual() {
+        Quantity gram1 = new Quantity(1.0, WeightUnit.GRAM);
+        Quantity gram2 = new Quantity(1.0, WeightUnit.GRAM);
+        assertEquals(gram1, gram2);
+    }
+
+    @Test
+    void given1KilogramAnd1000Grams_ShouldReturnEqual() {
+        Quantity kg = new Quantity(1.0, WeightUnit.KILOGRAM);
+        Quantity gram = new Quantity(1000.0, WeightUnit.GRAM);
+        assertEquals(kg, gram);
+    }
+
+    @Test
+    void given1TonneAnd1000Kgs_ShouldReturnEqual() {
+        Quantity tonne = new Quantity(1.0, WeightUnit.TONNE);
+        Quantity kg = new Quantity(1000.0, WeightUnit.KILOGRAM);
+        assertEquals(tonne, kg);
+    }
+
+    @Test
+    void given1TonneAnd1000Grams_WhenAdded_ShouldReturn1001Kgs() {
+        Quantity tonne = new Quantity(1.0, WeightUnit.TONNE);
+        Quantity grams = new Quantity(1000.0, WeightUnit.GRAM);
+        Quantity expected = new Quantity(1001.0, WeightUnit.KILOGRAM);
+
+        Quantity result = tonne.add(grams, WeightUnit.KILOGRAM);
+        assertEquals(expected, result);
+    }
+
+    // --- Type Safety Validation Tests ---
+
+    @Test
+    void given1FootAnd1Gram_WhenCompared_ShouldNotBeEqual() {
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity gram = new Quantity(1.0, WeightUnit.GRAM);
+
+        assertNotEquals(foot, gram); // Fails safely without an exception
+    }
+
+    @Test
+    void given1FootAnd1Gram_WhenAdded_ShouldThrowException() {
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity gram = new Quantity(1.0, WeightUnit.GRAM);
+
+        assertThrows(IllegalArgumentException.class, () -> foot.add(gram));
+    }
+
+    @Test
+    void given1Foot_WhenConvertedToGrams_ShouldThrowException() {
+        Quantity foot = new Quantity(1.0, LengthUnit.FEET);
+
+        assertThrows(IllegalArgumentException.class, () -> foot.convertTo(WeightUnit.GRAM));
+    }
 }
