@@ -17,7 +17,7 @@ public class Quantity <T extends Unit> {
 
         double baseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
         double convertedValue = UnitConverter.convertFromBaseValue(baseValue, targetUnit);
-        return new Quantity(convertedValue, targetUnit);
+        return new Quantity<>(convertedValue, targetUnit);
     }
 
 
@@ -35,7 +35,7 @@ public class Quantity <T extends Unit> {
         double finalValue = UnitConverter.convertFromBaseValue(sumInBaseUnits, targetUnit);
 
 
-        return new Quantity(finalValue, targetUnit);
+        return new Quantity<>(finalValue, targetUnit);
     }
     public Quantity<T> add(Quantity<T> other) {
 
@@ -64,7 +64,50 @@ public class Quantity <T extends Unit> {
 
         return Double.compare(thisBase, otherBase) == 0;
     }
+    // --- Subtraction Operations ---
 
+    public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
+        }
+
+        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+        double otherBaseValue = UnitConverter.convertToBaseValue(other.value, other.unit);
+
+        // Non-Commutative: Order strictly matters here
+        double differenceInBaseUnits = thisBaseValue - otherBaseValue;
+        double finalValue = UnitConverter.convertFromBaseValue(differenceInBaseUnits, targetUnit);
+
+        return new Quantity<>(finalValue, targetUnit);
+    }
+
+    public Quantity<T> subtract(Quantity<T> other) {
+        return this.subtract(other, this.unit);
+    }
+
+    // --- Division Operations ---
+
+    public Quantity<T> divide(double divisor, T targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target Unit cannot be null");
+        }
+        // Division by Zero Handling
+        if (divisor == 0.0) {
+            throw new ArithmeticException("Cannot divide a quantity by zero");
+        }
+
+        double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
+
+        // Non-Commutative division by a scalar
+        double dividedBaseUnits = thisBaseValue / divisor;
+        double finalValue = UnitConverter.convertFromBaseValue(dividedBaseUnits, targetUnit);
+
+        return new Quantity<>(finalValue, targetUnit);
+    }
+
+    public Quantity<T> divide(double divisor) {
+        return this.divide(divisor, this.unit);
+    }
     @Override
     public int hashCode() {
         return Objects.hash(value, unit);
