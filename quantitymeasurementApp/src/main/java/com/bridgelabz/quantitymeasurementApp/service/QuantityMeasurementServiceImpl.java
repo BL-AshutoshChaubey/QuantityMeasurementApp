@@ -4,9 +4,16 @@ import com.bridgelabz.quantitymeasurementApp.DTO.ConversionRequestDTO;
 import com.bridgelabz.quantitymeasurementApp.DTO.MeasurementResponseDTO;
 import com.bridgelabz.quantitymeasurementApp.domain.Quantity;
 import com.bridgelabz.quantitymeasurementApp.domain.Unit;
+import com.bridgelabz.quantitymeasurementApp.repository.ConversionHistoryDAO;
 import com.bridgelabz.quantitymeasurementApp.service.util.UnitResolver;
 
 public class QuantityMeasurementServiceImpl implements QuantityMeasurementService{
+    private final ConversionHistoryDAO historyDAO;
+
+    public QuantityMeasurementServiceImpl(ConversionHistoryDAO historyDAO) {
+        this.historyDAO = historyDAO;
+    }
+
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"}) // We handle generic type safety internally
     public MeasurementResponseDTO convert(ConversionRequestDTO request) {
@@ -24,11 +31,14 @@ public class QuantityMeasurementServiceImpl implements QuantityMeasurementServic
 
             // 3. Perform the conversion
             Quantity convertedQuantity = originalQuantity.convertTo(toUnit);
+            // Layer Integration: Save to DB
+            double finalResult = convertedQuantity.getValue();
+            historyDAO.saveHistory(request.value(), request.fromUnit(), request.toUnit(), finalResult);
 
             // 4. Return the successful data using DTO
-            return new MeasurementResponseDTO(convertedQuantity.getValue(), request.toUnit());
+            return new MeasurementResponseDTO(finalResult, request.toUnit());
 
-        } catch (IllegalArgumentException | UnsupportedOperationException e ) {
+        } catch (Exception e ) {
             // Error Handling as Data
             return MeasurementResponseDTO.error(e.getMessage());
         }
