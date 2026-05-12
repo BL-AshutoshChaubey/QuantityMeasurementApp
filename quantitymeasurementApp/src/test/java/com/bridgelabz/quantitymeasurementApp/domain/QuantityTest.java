@@ -270,6 +270,42 @@ public class QuantityTest {
 
         assertNotEquals(foot, gram); // Fails safely without an exception
     }
+    // --- UC11 Tests (Volume Support) ---
+
+    @Test
+    void given1GallonAnd3Point78Litres_ShouldReturnEqual() {
+        Quantity<VolumeUnit> gallon = new Quantity(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litre = new Quantity(3.78, VolumeUnit.LITRE);
+        assertEquals(gallon, litre);
+    }
+
+    @Test
+    void given1LitreAnd1000Millilitres_ShouldReturnEqual() {
+        Quantity<VolumeUnit> litre = new Quantity(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> ml = new Quantity(1000.0, VolumeUnit.MILLILITRE);
+        assertEquals(litre, ml);
+    }
+
+    @Test
+    void given1GallonAnd3Point78Litres_WhenAdded_ShouldReturn7Point56Litres() {
+        Quantity<VolumeUnit> gallon = new Quantity(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litre = new Quantity(3.78, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> expected = new Quantity(7.56, VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> result = gallon.add(litre, VolumeUnit.LITRE);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void given1LitreAnd1000Millilitres_WhenAdded_ShouldReturn2Litres() {
+        Quantity<VolumeUnit> litre = new Quantity(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> ml = new Quantity(1000.0, VolumeUnit.MILLILITRE);
+        Quantity expected = new Quantity(2.0, VolumeUnit.LITRE);
+
+        Quantity<VolumeUnit> result = litre.add(ml, VolumeUnit.LITRE);
+        assertEquals(expected, result);
+    }
+
 
 
 }
