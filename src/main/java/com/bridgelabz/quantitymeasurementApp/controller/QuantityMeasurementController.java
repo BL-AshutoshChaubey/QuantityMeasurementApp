@@ -1,5 +1,6 @@
 package com.bridgelabz.quantitymeasurementApp.controller;
 
+import com.bridgelabz.quantitymeasurementApp.DTO.ArithmeticRequestDTO;
 import com.bridgelabz.quantitymeasurementApp.DTO.ConversionRequestDTO;
 import com.bridgelabz.quantitymeasurementApp.DTO.MeasurementResponseDTO;
 import com.bridgelabz.quantitymeasurementApp.service.QuantityMeasurementService;
@@ -23,5 +24,23 @@ public class QuantityMeasurementController {
             return ResponseEntity.badRequest().body(response);
         }
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/arithmetic")
+    public ResponseEntity<MeasurementResponseDTO> arithmetic(@RequestBody ArithmeticRequestDTO request) {
+        MeasurementResponseDTO response = service.performArithmetic(request);
+
+        if (response.errorMessage() != null) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<java.util.List<com.bridgelabz.quantitymeasurementApp.DTO.HistoryItemDTO>> getHistory(org.springframework.security.core.Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(service.getHistory(auth.getName()));
     }
 }

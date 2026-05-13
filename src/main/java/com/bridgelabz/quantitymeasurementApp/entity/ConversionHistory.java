@@ -20,13 +20,18 @@ public class ConversionHistory {
     private double resultValue;
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     // Default constructor required by JPA
     public ConversionHistory() {}
 
-    public ConversionHistory(double inputValue, String inputUnit, String targetUnit, double resultValue) {
+    public ConversionHistory(double inputValue, String inputUnit, String targetUnit, double resultValue, User user) {
         this.inputValue = inputValue;
         this.inputUnit = inputUnit;
         this.targetUnit = targetUnit;
         this.resultValue = resultValue;
+        this.user = user;
     }
 }

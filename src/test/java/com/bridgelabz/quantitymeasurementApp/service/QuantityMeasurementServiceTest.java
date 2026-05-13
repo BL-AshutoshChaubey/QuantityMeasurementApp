@@ -3,7 +3,9 @@ package com.bridgelabz.quantitymeasurementApp.service;
 import com.bridgelabz.quantitymeasurementApp.DTO.ConversionRequestDTO;
 import com.bridgelabz.quantitymeasurementApp.DTO.MeasurementResponseDTO;
 import com.bridgelabz.quantitymeasurementApp.entity.ConversionHistory;
+import com.bridgelabz.quantitymeasurementApp.repository.ArithmeticHistoryRepository;
 import com.bridgelabz.quantitymeasurementApp.repository.ConversionHistoryRepository;
+import com.bridgelabz.quantitymeasurementApp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,10 +17,14 @@ public class QuantityMeasurementServiceTest {
     // Dependency Injection setup for testing
     private QuantityMeasurementService service;
     private ConversionHistoryRepository mockDao;
+    private ArithmeticHistoryRepository mockArithDao;
+    private UserRepository mockUserRepo;
     @BeforeEach
     void setUp() {
         mockDao = Mockito.mock(ConversionHistoryRepository.class);
-        this.service = new QuantityMeasurementServiceImpl(mockDao);
+        mockArithDao = Mockito.mock(ArithmeticHistoryRepository.class);
+        mockUserRepo = Mockito.mock(UserRepository.class);
+        this.service = new QuantityMeasurementServiceImpl(mockDao, mockArithDao, mockUserRepo);
     }
 
     @Test

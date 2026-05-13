@@ -38,8 +38,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // Generate JWT
         String token = jwtUtils.generateJwtToken(email);
 
-        // Since we have no frontend, we will just print the token to the browser screen for us to copy!
-        response.setContentType("application/json");
-        response.getWriter().write("{\"token\": \"" + token + "\", \"message\": \"Copy this token and use it as a Bearer Token in Postman!\"}");
+        // Instantly redirect back to the live React frontend application with active JWT token and profile name
+        String displayName = name != null ? name : email;
+        String encodedName = java.net.URLEncoder.encode(displayName, java.nio.charset.StandardCharsets.UTF_8);
+        response.sendRedirect("http://localhost:5173/?token=" + token + "&username=" + encodedName);
     }
 }
