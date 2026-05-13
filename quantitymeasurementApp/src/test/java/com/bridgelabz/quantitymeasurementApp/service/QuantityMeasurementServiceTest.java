@@ -2,21 +2,22 @@ package com.bridgelabz.quantitymeasurementApp.service;
 
 import com.bridgelabz.quantitymeasurementApp.DTO.ConversionRequestDTO;
 import com.bridgelabz.quantitymeasurementApp.DTO.MeasurementResponseDTO;
-import com.bridgelabz.quantitymeasurementApp.repository.ConversionHistoryDAO;
+import com.bridgelabz.quantitymeasurementApp.entity.ConversionHistory;
+import com.bridgelabz.quantitymeasurementApp.repository.ConversionHistoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
-
+import org.mockito.ArgumentCaptor;
 
 
 public class QuantityMeasurementServiceTest {
     // Dependency Injection setup for testing
     private QuantityMeasurementService service;
-    private ConversionHistoryDAO mockDao;
+    private ConversionHistoryRepository mockDao;
     @BeforeEach
     void setUp() {
-        mockDao = Mockito.mock(ConversionHistoryDAO.class);
+        mockDao = Mockito.mock(ConversionHistoryRepository.class);
         this.service = new QuantityMeasurementServiceImpl(mockDao);
     }
 
@@ -37,8 +38,16 @@ public class QuantityMeasurementServiceTest {
         assertNull(response.errorMessage());
         assertEquals(12.0, response.resultValue());
 
-        // Verify the DAO was actually called with the right parameters!
-        Mockito.verify(mockDao).saveHistory(1.0, "FEET", "INCHES", 12.0);
+        //  Create an ArgumentCaptor for the ConversionHistory class
+        ArgumentCaptor<ConversionHistory> historyCaptor = ArgumentCaptor.forClass(ConversionHistory.class);
+        Mockito.verify(mockDao).save(historyCaptor.capture());
+        ConversionHistory savedHistory = historyCaptor.getValue();
+        // Assert the fields of the captured object
+        assertEquals(1.0, savedHistory.getInputValue());
+        assertEquals("FEET", savedHistory.getInputUnit());
+        assertEquals("INCHES", savedHistory.getTargetUnit());
+        assertEquals(12.0, savedHistory.getResultValue());
+
     }
 
     @Test
