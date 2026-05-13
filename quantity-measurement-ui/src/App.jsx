@@ -9,6 +9,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import HistoryPanel from './components/HistoryPanel';
 import { performConversion, performArithmetic } from './services/api';
+import { Navigate } from 'react-router-dom';
 import './styles/main.scss';
 
 const UNIT_DICTIONARY = {
@@ -18,7 +19,7 @@ const UNIT_DICTIONARY = {
   VOLUME: ['LITRE', 'MILLILITRE', 'GALLON']
 };
 
-const MeasurementDashboard = () => {
+const MeasurementDashboard = ({ isLoggedIn }) => {
   const [refreshHistory, setRefreshHistory] = useState(0);
   const [selectedType, setSelectedType] = useState('LENGTH');
   const [selectedAction, setSelectedAction] = useState('CONVERSION');
@@ -139,7 +140,7 @@ const MeasurementDashboard = () => {
           )}
         </div>
       </div>
-      {localStorage.getItem('JWT_TOKEN') && (
+      {isLoggedIn && (
         <HistoryPanel refreshTrigger={refreshHistory} />
       )}
     </div>
@@ -147,25 +148,34 @@ const MeasurementDashboard = () => {
 };
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('JWT_TOKEN'));
+
+  const syncAuth = () => {
+    setIsLoggedIn(!!localStorage.getItem('JWT_TOKEN'));
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const username = params.get('username');
     if (token) {
       localStorage.setItem('JWT_TOKEN', token);
-      if (username) localStorage.setItem('USERNAME', username);
+      if (username) localStorage.setItem('USER_NAME', username);
       window.history.replaceState({}, document.title, window.location.pathname);
-      window.dispatchEvent(new Event('storage'));
+      syncAuth();
     }
+
+    window.addEventListener('storage', syncAuth);
+    return () => window.removeEventListener('storage', syncAuth);
   }, []);
 
   return (
     <BrowserRouter>
-      <Header />
+      <Header isLoggedIn={isLoggedIn} onLogout={syncAuth} />
       <Routes>
-        <Route path="/" element={<MeasurementDashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<MeasurementDashboard isLoggedIn={isLoggedIn} />} />
+        <Route path="/login" element={<Login onLoginSuccess={syncAuth} />} />
+        <Route path="/register" element={<Register onRegisterSuccess={syncAuth} />} />
       </Routes>
     </BrowserRouter>
   );
