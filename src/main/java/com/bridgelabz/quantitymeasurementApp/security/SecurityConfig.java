@@ -12,15 +12,30 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    public SecurityConfig(OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler,JwtAuthenticationFilter jwtAuthenticationFilter) {
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    
+    public SecurityConfig(OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, JwtAuthenticationFilter jwtAuthenticationFilter, ClientRegistrationRepository clientRegistrationRepository) {
         this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+    }
+
+    private OAuth2AuthorizationRequestResolver authorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
+        DefaultOAuth2AuthorizationRequestResolver authorizationRequestResolver =
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
+        authorizationRequestResolver.setAuthorizationRequestCustomizer(customizer -> 
+                customizer.additionalParameters(params -> params.put("prompt", "select_account")));
+        return authorizationRequestResolver;
     }
 
     @Bean
@@ -34,6 +49,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // Protect EVERYTHING else (including /api/v1/measurements/convert)
                 )
                 .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint -> endpoint
+                                .authorizationRequestResolver(authorizationRequestResolver(this.clientRegistrationRepository))
+                        )
                         .successHandler(oAuth2LoginSuccessHandler) // Use our custom handler
                 );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

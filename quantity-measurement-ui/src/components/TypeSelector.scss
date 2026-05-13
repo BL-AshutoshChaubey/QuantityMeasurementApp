@@ -1,0 +1,47 @@
+.type-selector-container {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.type-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #64748b;
+
+  &:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+  }
+
+  &.active {
+    border-color: #10b981; // Green color from the screenshot
+    color: #10b981;
+    background-color: #ecfdf5;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  }
+
+  .icon-wrapper {
+    margin-bottom: 8px;
+  }
+
+  .type-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
