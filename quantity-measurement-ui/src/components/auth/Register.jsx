@@ -1,27 +1,41 @@
 import React, { useState } from 'react';
-import { TextField, Button, Card, CardContent, Typography, Box, Divider } from '@mui/material';
+import { TextField, Button, Card, CardContent, Typography, Box, Divider, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import GoogleIcon from '@mui/icons-material/Google';
+import axios from 'axios';
 
-const Register = () => {
+const Register = ({ onRegisterSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
-    // Static simulation: redirect directly to dashboard
-    navigate('/');
+    try {
+      await axios.post(`${baseUrl}/auth/register`, { name, email, password });
+      // Auto-login after successful registration
+      const loginRes = await axios.post(`${baseUrl}/auth/login`, { email, password });
+      localStorage.setItem('JWT_TOKEN', loginRes.data.token);
+      localStorage.setItem('USER_NAME', loginRes.data.name);
+      localStorage.setItem('USER_EMAIL', loginRes.data.email);
+      if (onRegisterSuccess) onRegisterSuccess();
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data || 'Registration failed. Please try again.');
+    }
   };
 
   const handleGoogleRegister = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = 'http://localhost:8082/oauth2/authorization/google';
   };
 
   return (
@@ -37,6 +51,7 @@ const Register = () => {
 
           <form onSubmit={handleRegister}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {error && <Alert severity="error">{error}</Alert>}
               <TextField
                 label="Full Name" variant="outlined" fullWidth required
                 value={name} onChange={(e) => setName(e.target.value)}

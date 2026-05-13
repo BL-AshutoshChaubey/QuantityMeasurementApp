@@ -1,10 +1,7 @@
 import axios from 'axios';
 
-// Fallback development token if local storage is unpopulated
-const TEMP_JWT_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2h1dG9zaC5jaGF1YmV5QGJyaWRnZWxhYnouY29tIiwiaWF0IjoxNzc4NjcyNjYwLCJleHAiOjE3Nzg3NTkwNjB9.2wGrBf_wgmVlmRponr_N7MCHYl4HmlTBPdg3JjCu_lE";
-
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -12,7 +9,7 @@ const api = axios.create({
 
 // Dynamic JWT Interceptor
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('JWT_TOKEN') || TEMP_JWT_TOKEN;
+  const token = localStorage.getItem('JWT_TOKEN');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
-import { TextField, Button, Card, CardContent, Typography, Box, Divider } from '@mui/material';
+import { TextField, Button, Card, CardContent, Typography, Box, Divider, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import GoogleIcon from '@mui/icons-material/Google';
+import axios from 'axios';
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Static simulation: redirect directly to dashboard
-    navigate('/');
+    setError('');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
+    try {
+      const response = await axios.post(`${baseUrl}/auth/login`, { email, password });
+      localStorage.setItem('JWT_TOKEN', response.data.token);
+      localStorage.setItem('USER_NAME', response.data.name);
+      localStorage.setItem('USER_EMAIL', response.data.email);
+      if (onLoginSuccess) onLoginSuccess();
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Invalid email or password');
+    }
   };
 
   const handleGoogleLogin = () => {
-    // Redirect to native Spring Security OAuth2 Google authorization endpoint
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    // Redirect to identity-service OAuth2 endpoint (servlet-based, not through reactive Gateway)
+    window.location.href = 'http://localhost:8082/oauth2/authorization/google';
   };
 
   return (
@@ -32,6 +44,7 @@ const Login = () => {
 
           <form onSubmit={handleLogin}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+              {error && <Alert severity="error">{error}</Alert>}
               <TextField
                 label="Email Address"
                 type="email"

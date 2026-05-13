@@ -3,30 +3,15 @@ import { Box, Button, Typography, Chip } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const Header = () => {
+const Header = ({ isLoggedIn, onLogout }) => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState(null);
-  const [token, setToken] = useState(null);
-
-  useEffect(() => {
-    const checkAuth = () => {
-      setUsername(localStorage.getItem('USERNAME'));
-      setToken(localStorage.getItem('JWT_TOKEN'));
-    };
-    checkAuth();
-    window.addEventListener('storage', checkAuth);
-    const timer = setInterval(checkAuth, 1000);
-    return () => {
-      window.removeEventListener('storage', checkAuth);
-      clearInterval(timer);
-    };
-  }, []);
+  const username = localStorage.getItem('USER_NAME');
 
   const handleLogout = () => {
     localStorage.removeItem('JWT_TOKEN');
-    localStorage.removeItem('USERNAME');
-    setUsername(null);
-    setToken(null);
+    localStorage.removeItem('USER_NAME');
+    localStorage.removeItem('USER_EMAIL');
+    if (onLogout) onLogout();
     navigate('/login');
   };
 
@@ -50,7 +35,7 @@ const Header = () => {
         <Button component={Link} to="/" sx={{ color: 'white', fontWeight: 'bold', textTransform: 'none' }}>
           Dashboard
         </Button>
-        {token ? (
+        {isLoggedIn ? (
           <>
             <Chip
               icon={<AccountCircleIcon sx={{ color: 'white !important' }} />}
