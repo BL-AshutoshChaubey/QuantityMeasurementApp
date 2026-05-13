@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Quantity Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="dashboard">
+        <header class="app-header">
+            <div class="logo-badge">Pro</div> <h1>Quantity Measurement</h1>
+            <p>High-precision unit conversion &bull; <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">API Docs</a></p>
+        </header>
+
+        <section class="converter-section">
+            <form id="conversion-form">
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label for="inputValue">Value</label>
+                        <input type="number" id="inputValue" step="any" required placeholder="e.g. 12">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fromUnit">From Unit</label>
+                        <select id="fromUnit" required>
+                            <option value="INCHES">Inches</option>
+                            <option value="FEET">Feet</option>
+                            <option value="CELSIUS">Celsius</option>
+                            <option value="FAHRENHEIT">Fahrenheit</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="toUnit">To Unit</label>
+                        <select id="toUnit" required>
+                            <option value="FEET">Feet</option>
+                            <option value="INCHES">Inches</option>
+                            <option value="FAHRENHEIT">Fahrenheit</option>
+                            <option value="CELSIUS">Celsius</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="convertBtn">Convert Now</button>
+            </form>
+
+            <div id="result-container" class="hidden">
+                <h2 id="result-text">--</h2>
+                <p id="error-text" class="error-msg"></p>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
