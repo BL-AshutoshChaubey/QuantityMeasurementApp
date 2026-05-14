@@ -31,7 +31,7 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://eureka-server.railway.internal:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://quantitymeasurementapp.railway.internal/eureka/}
 
 jwt:
   secret: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
