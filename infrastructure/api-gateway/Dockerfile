@@ -16,6 +16,6 @@ RUN mvn clean package -pl infrastructure/api-gateway -am -DskipTests
 # Run stage
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-COPY --from=build /app/infrastructure/api-gateway/target/*.jar app.jar
+COPY --from=build /app/infrastructure/api-gateway/target/api-gateway.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -16,6 +16,6 @@ RUN mvn clean package -pl services/identity-service -am -DskipTests
 # Run stage
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-COPY --from=build /app/services/identity-service/target/*.jar app.jar
+COPY --from=build /app/services/identity-service/target/identity-service.jar app.jar
 EXPOSE 8082
 ENTRYPOINT ["java", "-jar", "app.jar"]
