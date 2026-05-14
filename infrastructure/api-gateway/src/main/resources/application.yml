@@ -30,6 +30,8 @@ spring:
             - Path=/api/v1/auth/**, /oauth2/**, /login/**
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://eureka-server.railway.internal:8761/eureka/}

@@ -27,6 +27,8 @@ spring:
             scope: profile,email
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://eureka-server.railway.internal:8761/eureka/}
