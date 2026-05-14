@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -13,9 +13,9 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: 
+            allowedOriginPatterns: 
               - "http://localhost:5173"
-              - "${FRONTEND_URL:*}"
+              - "${FRONTEND_URL:http://localhost:5173}"
             allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true

@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: services/identity-service/Dockerfile
     ports:
-      - "8082:8082"
+      - "8082:8080"
     depends_on:
       mysql:
         condition: service_healthy
@@ -56,7 +56,7 @@ services:
       context: .
       dockerfile: services/measurement-service/Dockerfile
     ports:
-      - "8081:8081"
+      - "8081:8080"
     depends_on:
       mysql:
         condition: service_healthy
