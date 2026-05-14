@@ -34,4 +34,4 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://quantitymeasurementapp.railway.internal/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://quantitymeasurementapp.railway.internal:8080/eureka/}
