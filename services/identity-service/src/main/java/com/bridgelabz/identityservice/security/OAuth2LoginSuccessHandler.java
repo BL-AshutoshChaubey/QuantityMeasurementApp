@@ -38,9 +38,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // Generate JWT
         String token = jwtUtils.generateJwtToken(email);
 
-        // Instantly redirect back to the live React frontend application with active JWT token and profile name
+        // Redirect back to the React frontend application (dynamically based on environment)
+        String frontendUrl = System.getenv("FRONTEND_URL");
+        if (frontendUrl == null || frontendUrl.isEmpty()) {
+            frontendUrl = "http://localhost:5173";
+        }
+        
         String displayName = name != null ? name : email;
         String encodedName = java.net.URLEncoder.encode(displayName, java.nio.charset.StandardCharsets.UTF_8);
-        response.sendRedirect("http://localhost:5173/?token=" + token + "&username=" + encodedName);
+        response.sendRedirect(frontendUrl + "/?token=" + token + "&username=" + encodedName);
     }
 }
