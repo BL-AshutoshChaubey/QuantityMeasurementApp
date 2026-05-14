@@ -173,7 +173,7 @@ Each use case is developed on a dedicated branch:
 
 ## 📄 License
 
-This project is developed as part of the **BridgeLabz Fellowship Program**.
+This project is developed as part of the **BridgeLabz  Program**.
 
 ---
 
