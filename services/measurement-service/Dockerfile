@@ -17,5 +17,5 @@ RUN mvn clean package -pl services/measurement-service -am -DskipTests
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 COPY --from=build /app/services/measurement-service/target/measurement-service.jar app.jar
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
