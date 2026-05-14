@@ -27,7 +27,7 @@ spring:
         - id: identity-service
           uri: lb://identity-service
           predicates:
-            - Path=/api/v1/auth/**
+            - Path=/api/v1/auth/**, /oauth2/**, /login/**
 
 eureka:
   client:

@@ -27,8 +27,9 @@ const Login = ({ onLoginSuccess }) => {
   };
 
   const handleGoogleLogin = () => {
-    // Redirect to identity-service OAuth2 endpoint (servlet-based, not through reactive Gateway)
-    window.location.href = 'http://localhost:8082/oauth2/authorization/google';
+    // Redirect through Gateway to identity-service OAuth2 endpoint
+    const gatewayUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8080';
+    window.location.href = `${gatewayUrl}/oauth2/authorization/google`;
   };
 
   return (

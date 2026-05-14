@@ -35,7 +35,8 @@ const Register = ({ onRegisterSuccess }) => {
   };
 
   const handleGoogleRegister = () => {
-    window.location.href = 'http://localhost:8082/oauth2/authorization/google';
+    const gatewayUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api/v1', '') || 'http://localhost:8080';
+    window.location.href = `${gatewayUrl}/oauth2/authorization/google`;
   };
 
   return (
