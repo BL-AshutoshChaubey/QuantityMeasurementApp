@@ -28,7 +28,8 @@ spring:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    hostname: ${RAILWAY_PRIVATE_DOMAIN:identity-service.railway.internal}
+    prefer-ip-address: false
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://quantitymeasurementapp.railway.internal:8080/eureka/}
