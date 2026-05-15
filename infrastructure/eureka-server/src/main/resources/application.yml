@@ -3,9 +3,13 @@ server:
 
 eureka:
   instance:
-    hostname: ${EUREKA_INSTANCE_HOSTNAME:eureka-server}
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:quantitymeasurementapp.railway.internal}
+    prefer-ip-address: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
-      defaultZone: http://quantitymeasurementapp.railway.internal:${server.port}/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
