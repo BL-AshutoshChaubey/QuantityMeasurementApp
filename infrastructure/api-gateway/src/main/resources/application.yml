@@ -16,8 +16,15 @@ spring:
           '[/**]':
             allowedOriginPatterns: 
               - "http://localhost:5173"
+              - "https://glittery-pithivier-d6c587.netlify.app"
               - "${FRONTEND_URL:http://localhost:5173}"
-            allowedMethods: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
             allowedHeaders: "*"
             allowCredentials: true
       routes:
