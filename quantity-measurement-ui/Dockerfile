@@ -1,9 +1,9 @@
 # Build stage
 FROM node:18-slim AS build
 WORKDIR /app
-COPY quantity-measurement-ui/package*.json ./
+COPY package*.json ./
 RUN npm install
-COPY quantity-measurement-ui/ ./
+COPY . ./
 RUN npm run build
 
 # Production stage
