@@ -13,7 +13,7 @@ const Login = ({ onLoginSuccess }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
     try {
       const response = await axios.post(`${baseUrl}/auth/login`, { email, password });
       localStorage.setItem('JWT_TOKEN', response.data.token);
@@ -28,7 +28,7 @@ const Login = ({ onLoginSuccess }) => {
 
   const handleGoogleLogin = () => {
     // Redirect to identity-service OAuth2 endpoint (servlet-based, not through reactive Gateway)
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = '/oauth2/authorization/google';
   };
 
   return (

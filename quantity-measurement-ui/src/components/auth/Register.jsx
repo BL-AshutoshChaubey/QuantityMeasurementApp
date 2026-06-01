@@ -15,7 +15,7 @@ const Register = ({ onRegisterSuccess }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api/v1';
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -35,7 +35,7 @@ const Register = ({ onRegisterSuccess }) => {
   };
 
   const handleGoogleRegister = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = '/oauth2/authorization/google';
   };
 
   return (
