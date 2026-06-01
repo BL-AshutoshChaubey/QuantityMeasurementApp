@@ -6,6 +6,7 @@ import com.bridgelabz.quantitymeasurementApp.DTO.MeasurementResponseDTO;
 import com.bridgelabz.quantitymeasurementApp.service.QuantityMeasurementService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/measurements")
@@ -17,7 +18,7 @@ public class QuantityMeasurementController {
     }
 
     @PostMapping("/convert")
-    public ResponseEntity<MeasurementResponseDTO> convert(@RequestBody ConversionRequestDTO request) {
+    public ResponseEntity<MeasurementResponseDTO> convert(@Valid @RequestBody ConversionRequestDTO request) {
         MeasurementResponseDTO response = service.convert(request);
 
         if (response.errorMessage() != null) {
@@ -27,7 +28,7 @@ public class QuantityMeasurementController {
     }
 
     @PostMapping("/arithmetic")
-    public ResponseEntity<MeasurementResponseDTO> arithmetic(@RequestBody ArithmeticRequestDTO request) {
+    public ResponseEntity<MeasurementResponseDTO> arithmetic(@Valid @RequestBody ArithmeticRequestDTO request) {
         MeasurementResponseDTO response = service.performArithmetic(request);
 
         if (response.errorMessage() != null) {
