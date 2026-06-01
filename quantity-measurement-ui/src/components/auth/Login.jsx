@@ -28,7 +28,7 @@ const Login = ({ onLoginSuccess }) => {
 
   const handleGoogleLogin = () => {
     // Redirect to identity-service OAuth2 endpoint (servlet-based, not through reactive Gateway)
-    window.location.href = 'http://localhost:8082/oauth2/authorization/google';
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
 
   return (
