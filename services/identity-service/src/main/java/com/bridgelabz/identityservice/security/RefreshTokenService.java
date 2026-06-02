@@ -37,12 +37,10 @@ public class RefreshTokenService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        // Delete existing token if present to prevent multiple tokens for the same user
-        refreshTokenRepository.findByUser(user).ifPresent(token -> refreshTokenRepository.delete(token));
-
+        // Find existing token or create a new one to prevent duplicate entry constraint violations on login
+        RefreshToken refreshToken = refreshTokenRepository.findByUser(user).orElse(new RefreshToken());
+        
         String rawToken = UUID.randomUUID().toString();
-
-        RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(jwtUtils.sha256(rawToken)); // Save SHA-256 hash in DB
