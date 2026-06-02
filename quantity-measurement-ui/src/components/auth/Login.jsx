@@ -17,6 +17,7 @@ const Login = ({ onLoginSuccess }) => {
     try {
       const response = await axios.post(`${baseUrl}/auth/login`, { email, password });
       localStorage.setItem('JWT_TOKEN', response.data.token);
+      localStorage.setItem('REFRESH_TOKEN', response.data.refreshToken);
       localStorage.setItem('USER_NAME', response.data.name);
       localStorage.setItem('USER_EMAIL', response.data.email);
       if (onLoginSuccess) onLoginSuccess();

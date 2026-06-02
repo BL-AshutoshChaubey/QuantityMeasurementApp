@@ -39,8 +39,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
-        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder(JwtUtils jwtUtils) {
+        return new org.springframework.security.crypto.password.PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return jwtUtils.sha256(rawPassword.toString());
+            }
+
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return jwtUtils.sha256(rawPassword.toString()).equals(encodedPassword);
+            }
+        };
     }
 
     @Bean

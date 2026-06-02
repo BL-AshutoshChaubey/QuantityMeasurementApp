@@ -157,9 +157,11 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    const refreshToken = params.get('refreshToken');
     const username = params.get('username');
     if (token) {
       localStorage.setItem('JWT_TOKEN', token);
+      if (refreshToken) localStorage.setItem('REFRESH_TOKEN', refreshToken);
       if (username) localStorage.setItem('USER_NAME', username);
       window.history.replaceState({}, document.title, window.location.pathname);
       syncAuth();
