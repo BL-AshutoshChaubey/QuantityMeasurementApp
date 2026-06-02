@@ -9,6 +9,7 @@ const Header = ({ isLoggedIn, onLogout }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('JWT_TOKEN');
+    localStorage.removeItem('REFRESH_TOKEN');
     localStorage.removeItem('USER_NAME');
     localStorage.removeItem('USER_EMAIL');
     if (onLogout) onLogout();

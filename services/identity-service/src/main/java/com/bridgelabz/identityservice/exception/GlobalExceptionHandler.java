@@ -24,4 +24,17 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<?> handleTokenRefreshException(TokenRefreshException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.status(403).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGlobalException(Exception ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "An unexpected error occurred: " + ex.getMessage());
+        return ResponseEntity.status(500).body(response);
+    }
 }

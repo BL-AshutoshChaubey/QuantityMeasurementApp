@@ -20,4 +20,13 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.badRequest().body(MeasurementResponseDTO.error(errorMessage));
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MeasurementResponseDTO> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(MeasurementResponseDTO.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<MeasurementResponseDTO> handleGlobalException(Exception ex) {
+        return ResponseEntity.status(500).body(MeasurementResponseDTO.error("An unexpected error occurred: " + ex.getMessage()));
+    }
 }
