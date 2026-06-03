@@ -1,5 +1,6 @@
 package com.bridgelabz.identityservice.security;
 
+import com.bridgelabz.identityservice.entity.RefreshToken;
 import com.bridgelabz.identityservice.entity.User;
 import com.bridgelabz.identityservice.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,14 +17,18 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+    private final RefreshTokenService refreshTokenService;
 
-    public OAuth2LoginSuccessHandler(UserRepository userRepository, JwtUtils jwtUtils) {
+    public OAuth2LoginSuccessHandler(UserRepository userRepository, JwtUtils jwtUtils,
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = oAuth2User.getAttribute("email");
@@ -35,17 +40,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             return userRepository.save(newUser);
         });
 
-        // Generate JWT
+        // Generate JWT and Refresh Token
         String token = jwtUtils.generateJwtToken(email);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(email);
 
-        // Redirect back to the React frontend application (dynamically based on environment)
-        String frontendUrl = System.getenv("FRONTEND_URL");
-        if (frontendUrl == null || frontendUrl.isEmpty()) {
-            frontendUrl = "http://localhost:5173";
-        }
-        
+        // Instantly redirect back to the live React frontend application with active
+        // JWT token, refresh token, and profile name
         String displayName = name != null ? name : email;
         String encodedName = java.net.URLEncoder.encode(displayName, java.nio.charset.StandardCharsets.UTF_8);
-        response.sendRedirect(frontendUrl + "/?token=" + token + "&username=" + encodedName);
+        response.sendRedirect("http://localhost:5173/?token=" + token + "&refreshToken=" + refreshToken.getRawToken()
+                + "&username=" + encodedName);
     }
 }

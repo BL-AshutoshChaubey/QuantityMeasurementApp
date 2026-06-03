@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: 8082
   forward-headers-strategy: framework
 
 spring:
@@ -25,16 +25,17 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: profile,email
-            redirect-uri: "https://qm-gateway-production.up.railway.app/login/oauth2/code/google"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 eureka:
   instance:
-    hostname: ${RAILWAY_PRIVATE_DOMAIN:identity-service.railway.internal}
-    prefer-ip-address: false
+    hostname: localhost
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://quantitymeasurementapp.railway.internal:8080/eureka/}
 
 jwt:
   secret: ${JWT_SECRET_KEY:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
-  expiration: 86400000
+  expiration: 900000 # 15 minutes (Access Token)
+  refreshExpirationMs: 86400000 # 24 hours (Refresh Token)
