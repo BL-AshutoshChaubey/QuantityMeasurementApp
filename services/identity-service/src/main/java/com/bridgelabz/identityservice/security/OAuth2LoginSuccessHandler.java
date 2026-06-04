@@ -19,6 +19,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
 
+    @org.springframework.beans.factory.annotation.Value("${FRONTEND_URL:http://localhost:5173}")
+    private String frontendUrl;
+
     public OAuth2LoginSuccessHandler(UserRepository userRepository, JwtUtils jwtUtils,
             RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
@@ -48,7 +51,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // JWT token, refresh token, and profile name
         String displayName = name != null ? name : email;
         String encodedName = java.net.URLEncoder.encode(displayName, java.nio.charset.StandardCharsets.UTF_8);
-        response.sendRedirect("http://localhost:5173/?token=" + token + "&refreshToken=" + refreshToken.getRawToken()
+        
+        String redirectUrl = frontendUrl.endsWith("/") ? frontendUrl.substring(0, frontendUrl.length() - 1) : frontendUrl;
+        response.sendRedirect(redirectUrl + "/?token=" + token + "&refreshToken=" + refreshToken.getRawToken()
                 + "&username=" + encodedName);
     }
 }
