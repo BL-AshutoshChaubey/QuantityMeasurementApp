@@ -56,18 +56,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.disable()) // CORS handled at API Gateway level
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for REST APIs
+                .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/auth/**").permitAll() // Public routes
-                        .anyRequest().authenticated() // Protect EVERYTHING else
+                        .requestMatchers("/", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(endpoint -> endpoint
                                 .authorizationRequestResolver(authorizationRequestResolver(this.clientRegistrationRepository))
                         )
-                        .successHandler(oAuth2LoginSuccessHandler) // Use our custom handler
+                        .successHandler(oAuth2LoginSuccessHandler)
                 );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

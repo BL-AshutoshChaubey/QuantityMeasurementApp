@@ -52,7 +52,6 @@ public class QuantityMeasurementServiceImpl implements QuantityMeasurementServic
             Unit fromUnit = UnitResolver.resolveUnit(request.fromUnit());
             Unit toUnit = UnitResolver.resolveUnit(request.toUnit());
 
-            //API BOUNDARY VALIDATION: Prevent Cross-Category math at runtime( as generic safety is suppress)
             if (!fromUnit.getClass().equals(toUnit.getClass())) {
                 throw new IllegalArgumentException("Cannot convert across different measurement categories.");
             }
@@ -61,7 +60,6 @@ public class QuantityMeasurementServiceImpl implements QuantityMeasurementServic
             Quantity convertedQuantity = originalQuantity.convertTo(toUnit);
             double finalResult = convertedQuantity.getValue();
 
-            // Layer Integration: Save to DB with secure caller mapping (only if logged in)
             String currentUserEmail = resolveCurrentUserEmail();
             if (currentUserEmail != null) {
                 ConversionHistory history = new ConversionHistory(request.value(), request.fromUnit(), request.toUnit(), finalResult, currentUserEmail);
@@ -93,7 +91,6 @@ public class QuantityMeasurementServiceImpl implements QuantityMeasurementServic
             Quantity finalQuantity;
 
             if ("DIVIDE".equalsIgnoreCase(request.operation())) {
-                // Scalar division
                 finalQuantity = q1.divide(request.value2(), resultUnit);
             } else {
                 Unit unit2 = UnitResolver.resolveUnit(request.unit2());
@@ -113,7 +110,6 @@ public class QuantityMeasurementServiceImpl implements QuantityMeasurementServic
 
             double finalResult = finalQuantity.getValue();
 
-            // Save to DB with secure caller mapping (only if logged in)
             String currentUserEmail = resolveCurrentUserEmail();
             if (currentUserEmail != null) {
                 ArithmeticHistory history = new ArithmeticHistory(

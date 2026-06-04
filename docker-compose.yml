@@ -82,14 +82,6 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - EUREKA_INSTANCE_HOSTNAME=api-gateway
 
-  frontend:
-    build:
-      context: ./quantity-measurement-ui
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - api-gateway
 
 volumes:
   mysql_data:

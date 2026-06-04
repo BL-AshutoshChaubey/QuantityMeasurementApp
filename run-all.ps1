@@ -37,11 +37,11 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "Title API-Gateway
 Start-Sleep -Seconds 3
 
 # 6. Start React Frontend (Port 5173)
-if (Test-Path "d:\Ashutosh\quantitymeasurementApp\quantity-measurement-ui") {
+if (Test-Path "D:\Ashutosh\quantity-measurement-ui") {
     Write-Host "Starting React Frontend UI..." -ForegroundColor Green
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "Title React-Frontend; cd d:\Ashutosh\quantitymeasurementApp\quantity-measurement-ui; npm install; npm run dev"
+    Start-Process powershell -ArgumentList "-NoExit", "-Command", "Title React-Frontend; cd D:\Ashutosh\quantity-measurement-ui; npm install; npm run dev"
 } else {
-    Write-Warning "React Frontend directory not found at d:\Ashutosh\quantitymeasurementApp\quantity-measurement-ui!"
+    Write-Warning "React Frontend directory not found at D:\Ashutosh\quantity-measurement-ui!"
 }
 
 Write-Host "`nAll services started successfully in separate terminal windows!" -ForegroundColor Green

@@ -29,7 +29,6 @@ public class Quantity <T extends Unit> {
         }
 
         double thisBaseValue = UnitConverter.convertToBaseValue(this.value, this.unit);
-        // Execute the Lambda expression passed via the Enum
         double resultBaseValue = operation.apply(thisBaseValue, operandBaseValue);
         double finalValue = UnitConverter.convertFromBaseValue(resultBaseValue, targetUnit);
         return new Quantity<>(finalValue, targetUnit);
@@ -50,8 +49,6 @@ public class Quantity <T extends Unit> {
 
 
 
-    // --- Subtraction Operations ---
-
     public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Quantity and Target Unit cannot be null");
@@ -64,8 +61,6 @@ public class Quantity <T extends Unit> {
         return this.subtract(other, this.unit);
     }
 
-    // --- Division Operations ---
-
     public Quantity<T> divide(double divisor, T targetUnit) {
         if (targetUnit == null) {
             throw new IllegalArgumentException("Target Unit cannot be null");
@@ -76,23 +71,17 @@ public class Quantity <T extends Unit> {
     public Quantity<T> divide(double divisor) {
         return this.divide(divisor, this.unit);
     }
-    // Overriding equals to satisfy UC1: Object Equality, Null, and Type Checking
     @Override
     public boolean equals(Object object) {
-        // 1. Reference Check
         if (this == object) return true;
-        // 2. Null and Type Check
         if (object == null || getClass() != object.getClass()) return false;
 
-        // 4. Type Erasure and Wildcards (<?>): At runtime, generic types are erased.
-        // We use a wildcard to safely cast the object.
         Quantity<?> quantity = (Quantity<?>) object;
 
-        // ENFORCE TYPE SAFETY: If they are different categories, they cannot be equal!// checking at runtime
         if (!this.unit.getClass().equals(quantity.unit.getClass())) {
             return false;
         }
-        // 3. Floating-point comparison using Double.compare
+
         double thisBase = UnitConverter.convertToBaseValue(this.value, this.unit);
         double otherBase = UnitConverter.convertToBaseValue(quantity.value, quantity.unit);
 
